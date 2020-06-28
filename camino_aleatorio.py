@@ -76,7 +76,7 @@ def main(distancias_de_caminata, numero_de_intentos, tipo_de_borracho):
     indice_color = 0
     caminos = caminos[::-1]
     for camino in caminos:
-        graficar_camino(camino[0], camino[1], grafica_caminos, f"{len(camino[0])} pasos", colores[indice_color])
+        graficar_camino(camino[0], camino[1], grafica_caminos, f"{len(camino[0]) / 100} pasos", colores[indice_color])
         indice_color += 1
 
     show(grafica_caminos)
