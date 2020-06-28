@@ -2,6 +2,7 @@ from borracho import BorrachoTradicional, BorrachoMuyMareado, BorrachoNoIzquierd
 from campo import Campo
 from coordenada import Coordenada
 from bokeh.plotting import figure, show
+import time
 
 def caminata(campo, borracho, pasos):
     inicio = campo.obtener_coordenada(borracho)
@@ -36,10 +37,23 @@ def graficar_camino(x, y, grafica, tipo_borracho, color):
 
 
 def main(distancias_de_caminata, numero_de_intentos, tipo_de_borracho):
-    grafica_caminos = figure(title='Grafica caminos', x_axis_label="x", y_axis_label="y")
+
+    titulo_tipo_de_borracho = ""
+    if tipo_de_borracho == BorrachoTradicional:
+        titulo_tipo_de_borracho = "borracho tradicional"
+    elif tipo_de_borracho == BorrachoMuyMareado:
+        titulo_tipo_de_borracho = "borracho muy mareado"
+    elif tipo_de_borracho == BorrachoNoIzquierda:
+        titulo_tipo_de_borracho = "borracho no izquierda"
 
     distancias_media_por_caminata = []
+
+    grafica_caminos = figure(title=f'Grafica caminos {titulo_tipo_de_borracho}', x_axis_label="x", y_axis_label="y")
+    colores = ["#ff0000", "#00ff00", "#0000ff", "#0aa005"]
+
+    caminos = []
     for pasos in distancias_de_caminata:
+        
         distancias, coordenadas = simular_caminata(pasos, numero_de_intentos, tipo_de_borracho)
         distancia_media = round(sum(distancias) / len(distancias), 4)
         distancia_maxima = max(distancias)
@@ -57,10 +71,15 @@ def main(distancias_de_caminata, numero_de_intentos, tipo_de_borracho):
             x.append(coord.x)
             y.append(coord.y)
 
-        graficar_camino(x, y, grafica_caminos, "borracho", "#ff0000")
-        show(grafica_caminos)
+        caminos.append((x, y))
+    
+    indice_color = 0
+    caminos = caminos[::-1]
+    for camino in caminos:
+        graficar_camino(camino[0], camino[1], grafica_caminos, f"{len(camino[0])} pasos", colores[indice_color])
+        indice_color += 1
 
-
+    show(grafica_caminos)
     return (distancias_de_caminata, distancias_media_por_caminata)
 
 
@@ -78,6 +97,7 @@ if __name__ == '__main__':
     distancias_de_caminata, distancias_media_por_caminata = main(distancias_de_caminata, numero_de_intentos, BorrachoNoIzquierda)
     graficar(distancias_de_caminata, distancias_media_por_caminata, grafica, "borracho no izquierda", "#00ff00")
 
+    time.sleep(10)
     show(grafica)
 
     
